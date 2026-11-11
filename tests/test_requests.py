@@ -2327,6 +2327,14 @@ class TestRequests:
         assert not r.history[1].is_redirect
         assert r.url == urls_test[2]
 
+    def test_get_redirect_target_non_utf8_location(self):
+        session = requests.Session()
+        response = requests.Response()
+        response.status_code = 302
+        response.headers = CaseInsensitiveDict({"Location": "caf\u00e9"})
+        assert session.get_redirect_target(response) == "caf\u00e9"
+
+
 
 class TestCaseInsensitiveDict:
     @pytest.mark.parametrize(
